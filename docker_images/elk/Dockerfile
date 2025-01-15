@@ -10,7 +10,7 @@ RUN apt-get update \
 
 RUN /opt/logstash/bin/logstash-plugin install logstash-input-gelf
 
-EXPOSE 12201/udp
+EXPOSE 30001/udp
 EXPOSE 80
 
 VOLUME /var/lib/elasticsearch/
