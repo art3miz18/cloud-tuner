@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
@@ -17,3 +17,4 @@ subjects:
     name: {{ template "nginx-ingress.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
+

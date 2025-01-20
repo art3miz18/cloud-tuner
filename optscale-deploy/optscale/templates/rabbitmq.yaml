@@ -199,6 +199,7 @@ spec:
             set -ex
             cp /configmap/* /etc/rabbitmq
             echo "${RABBITMQ_ERLANG_COOKIE}" > /var/lib/rabbitmq/.erlang.cookie
+            chmod 600 /var/lib/rabbitmq/.erlang.cookie
             {{- if .Values.forceBoot }}
             if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
@@ -231,7 +232,7 @@ spec:
 {{- end }}
       containers:
       - name: {{ $config.name }}
-        image: "rabbitmq:3.8.2-management-alpine"
+        image: "rabbitmq:3.12-management-alpine"
         imagePullPolicy: {{ $config.image.pullPolicy }}
         env:
         - name: IMAGE_ID
@@ -288,26 +289,13 @@ spec:
         - name: http
           protocol: TCP
           containerPort: {{ $config.service.managerPort }}
-        livenessProbe:
-          initialDelaySeconds: 120
+        readinessProbe:
+          tcpSocket:
+            port: amqp  # Use the AMQP port (5672)
+          initialDelaySeconds: 60  # Wait for RabbitMQ to initialize
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 6
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
-        readinessProbe:
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 6
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+          failureThreshold: 3
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/rabbitmq
@@ -335,4 +323,4 @@ spec:
           items:
           - key: definitions.json
             path: definitions.json
-{{ include "anti-affinity" $config | indent 6 }}
+# {{ include "anti-affinity" $config | indent 6 }}

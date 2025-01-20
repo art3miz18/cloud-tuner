@@ -170,7 +170,7 @@ herald:
     internalPort: 8906
 
 elk:
-  enabled: false
+  enabled: true
   name: &elk_name elk
   es_connect_retry: "90"
   ls_heap_size: 2g
