@@ -47,7 +47,7 @@ spec:
     app.kubernetes.io/instance: nginx-ingress
     app.kubernetes.io/name: ingress-nginx
   sessionAffinity: None
-  type: LoadBalancer
+  type: nodePort
 status:
   loadBalancer:
     ingress:

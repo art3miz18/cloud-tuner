@@ -42,3 +42,9 @@ optscale-deploy/myenv
 optscale-deploy/tls.crt
 optscale-deploy/tls.key
 optscale-deploy/tmp
+
+
+optscale-deploy/cloud-tuner/values.yaml
+optscale-deploy/optscale/values.yaml
+optscale-deploy/overlay/user_template.yml
+values.yaml
